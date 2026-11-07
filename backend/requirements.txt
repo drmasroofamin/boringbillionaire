@@ -1,0 +1,15 @@
+fastapi==0.162.2
+starlette==1.10.0
+uvicorn[standard]==0.34.2
+sqlalchemy==2.0.40
+psycopg[binary]==3.2.6
+pydantic-settings==2.8.1
+PyJWT==2.15.1
+pwdlib[argon2]==0.2.1
+python-multipart==0.0.33
+boto3==1.37.38
+httpx==0.28.1
+pytest==9.2.0
+pyotp==2.9.0
+
+alembic==1.15.2
