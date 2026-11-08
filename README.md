@@ -4,6 +4,16 @@ A responsive React + Tailwind application backed by FastAPI, SQLAlchemy, Postgre
 
 **Current release is a working, single-server demo. No real money is accepted or transferred. Live mode deliberately refuses to start.** Payoneer gateway/payout execution, signed webhook processing, durable retries, external KYC, and SMS delivery still require production adapters and merchant onboarding. Environment variables alone do not enable these integrations.
 
+## Run on Linux
+
+With Git, Python 3.12+ (including venv), and Node.js 22+ installed:
+
+```bash
+./run-local.sh
+```
+
+The launcher installs dependencies, preserves existing configuration, applies migrations, starts both local servers, and opens your browser. Press Ctrl+C to stop them. See [the Linux setup guide](docs/LINUX.md) for cloning, prerequisites, and troubleshooting. Payments remain simulated.
+
 ## Quick start
 
 Requires Python 3.12+, Node 22+, and npm. The checked-in lockfile pins frontend dependencies.

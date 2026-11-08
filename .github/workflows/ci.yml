@@ -54,23 +54,26 @@ jobs:
         working-directory: frontend
       - run: npx playwright install --with-deps chromium
         working-directory: frontend
-      - run: pip install -r backend/requirements.txt
       - name: Start demo servers and exercise roles
         env:
           DEMO_MODE: "true"
           JWT_SECRET: ci-demo-only-signing-key-not-for-production-12345
         run: |
-          (cd backend && python -m alembic upgrade head && python -m uvicorn app.main:app --port 8000) > /tmp/api.log 2>&1 &
-          (cd frontend && npm run dev -- --port 5173) > /tmp/frontend.log 2>&1 &
-          for attempt in $(seq 1 30); do
+          ./run-local.sh --no-browser > /tmp/local-launcher.log 2>&1 &
+          launcher_pid=$!
+          trap 'kill "$launcher_pid" 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 120); do
+            if ! kill -0 "$launcher_pid" 2>/dev/null; then cat /tmp/local-launcher.log; exit 1; fi
             if curl -fsS http://127.0.0.1:8000/api/health && curl -fsS http://127.0.0.1:5173 >/dev/null; then break; fi
             sleep 1
           done
+          curl -fsS http://127.0.0.1:8000/api/health
+          curl -fsS http://127.0.0.1:5173 >/dev/null
           cd frontend
           npm run test:e2e
       - name: Show server failures
         if: failure()
-        run: cat /tmp/api.log /tmp/frontend.log
+        run: cat /tmp/local-launcher.log
   dependencies:
     runs-on: ubuntu-latest
     steps:
